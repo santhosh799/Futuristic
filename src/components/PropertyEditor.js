@@ -1,10 +1,21 @@
-// src/components/PropertyEditor.js
 import React from 'react';
 
 const PropertyEditor = ({ component, updateComponentProps }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
-    updateComponentProps(component.id, { ...component.props, [name]: value });
+    let newValue = value;
+
+    if (name === 'images') {
+      newValue = value.split(',').map(url => url.trim());
+    } else if (name === 'fields') {
+      newValue = value.split(',').map(type => ({ type: type.trim() }));
+    } else if (name === 'profiles') {
+      newValue = value.split(',').map(url => ({ href: url.trim() }));
+    } else if (name === 'children') {
+      newValue = value.split('\n');
+    }
+
+    updateComponentProps(component.id, { ...component.props, [name]: newValue });
   };
 
   const renderField = (prop, label, type = 'text') => (
